@@ -7,7 +7,7 @@
 A frontend prototype built during the Generative AI Hackathon at GITAM. The system helps users report and search for lost or found items on campus. Explores Gemini APIs and Firebase for backend integration.
 
 ## 🌐 Live Demo
-[View Website](https://neelaputarun.github.io/lost-and-found-hackathon-2025-GITAM/)
+[View Website](https://neelaputarun.github.io/lost-and-found-hackathon-2025-GITAM/web.html)
 
 ## 🛠️ Tech Stack
 - HTML / CSS / JavaScript
