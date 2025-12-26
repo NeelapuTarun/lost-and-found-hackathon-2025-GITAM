@@ -1,0 +1,2582 @@
+// Lost and Found items website hackathon //
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost & Found - Student App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-purple: #8b5cf6;
+            --primary-purple-dark: #7c3aed;
+            --primary-pink: #ec4899;
+            --primary-blue: #3b82f6;
+            --primary-cyan: #06b6d4;
+            --radiant-purple: #a855f7;
+            --radiant-pink: #f472b6;
+            --radiant-blue: #60a5fa;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --match-high: #10b981;
+            --match-medium: #f59e0b;
+            --match-low: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #ec4899 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 10s ease infinite;
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--bg-white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-section h1 {
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 50%, var(--radiant-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .logo-section p {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--radiant-purple);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+        }
+
+        .captcha-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .captcha-box {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-blue);
+            letter-spacing: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-blue-dark);
+        }
+
+        .btn-install {
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            color: white;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-install::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-install:hover::before {
+            left: 100%;
+        }
+
+        .btn-install:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+        }
+
+        .link-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .link-group a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .link-group a:hover {
+            text-decoration: underline;
+        }
+
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            background: var(--bg-light);
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .header {
+            background: var(--bg-white);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 50%, var(--radiant-blue) 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .welcome-section h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 30px 20px;
+        }
+
+        .option-card {
+            background: var(--bg-white);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .option-card i {
+            font-size: 48px;
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .option-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .option-card p {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .form-section {
+            display: none;
+            padding: 30px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-card {
+            background: var(--bg-white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-card h2 {
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-item {
+            padding: 20px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .category-item:hover::before {
+            left: 100%;
+        }
+
+        .category-item:hover {
+            border-color: var(--radiant-purple);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .category-item.selected {
+            border-color: var(--radiant-purple);
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            color: white;
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4);
+        }
+
+        .category-item.selected .category-label {
+            color: white;
+            font-weight: 600;
+        }
+
+        .category-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover .category-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .category-item.selected .category-icon {
+            transform: scale(1.2);
+            filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
+        }
+
+        .category-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--radiant-purple);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+            transform: scale(1.02);
+        }
+
+        .file-upload i {
+            font-size: 48px;
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .file-preview {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .file-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--radiant-purple);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+        }
+
+        .location-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-white);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: var(--text-gray);
+            transition: all 0.3s ease;
+            padding: 5px 20px;
+        }
+
+        .nav-item.active {
+            color: var(--radiant-purple);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active i {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .nav-item i {
+            font-size: 24px;
+        }
+
+        .nav-item span {
+            font-size: 12px;
+        }
+
+        .back-btn {
+            background: var(--bg-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: var(--border-color);
+        }
+
+        .profile-section {
+            display: none;
+            padding: 30px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+
+        .profile-section.active {
+            display: block;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-blue) 100%);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+            border: 4px solid white;
+        }
+
+        .profile-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .profile-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-stat-card {
+            background: var(--bg-white);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-stat-card .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .profile-stat-card .stat-label {
+            color: var(--text-gray);
+            font-size: 12px;
+        }
+
+        .profile-info-card {
+            background: var(--bg-white);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-info-card h3 {
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .profile-reports-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .report-item-mini {
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--primary-green);
+        }
+
+        .report-item-mini h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .report-item-mini .report-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .match-card {
+            background: var(--bg-white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--radiant-purple);
+            position: relative;
+            animation: slideIn 0.5s ease;
+            transition: all 0.3s ease;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.2);
+        }
+
+        .match-score {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .match-high {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--match-high);
+        }
+
+        .match-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--match-medium);
+        }
+
+        .match-low {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--match-low);
+        }
+
+        .match-details {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .match-details p {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin: 5px 0;
+        }
+
+        .suggestions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-white);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            color: white;
+            border-color: var(--radiant-purple);
+        }
+
+        .loading-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-container.active {
+            display: flex;
+        }
+
+        .loading-animation {
+            width: 150px;
+            height: 150px;
+        }
+
+        .time-inputs-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .time-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .time-input-wrapper input {
+            width: 100%;
+            padding: 12px 45px 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .clock-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .clock-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .clock-picker-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .clock-picker-modal.active {
+            display: flex;
+        }
+
+        .clock-picker-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        .clock-face {
+            width: 300px;
+            height: 300px;
+            border: 8px solid var(--radiant-purple);
+            border-radius: 50%;
+            position: relative;
+            margin: 20px auto;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .clock-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: var(--radiant-purple);
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        .clock-hand {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            background: var(--radiant-purple);
+            border-radius: 4px;
+            cursor: grab;
+            transition: transform 0.1s ease;
+        }
+
+        .clock-hand:active {
+            cursor: grabbing;
+        }
+
+        .hour-hand {
+            width: 6px;
+            height: 80px;
+            margin-left: -3px;
+            margin-top: -80px;
+            background: linear-gradient(to top, var(--radiant-purple), var(--radiant-pink));
+        }
+
+        .minute-hand {
+            width: 4px;
+            height: 120px;
+            margin-left: -2px;
+            margin-top: -120px;
+            background: linear-gradient(to top, var(--radiant-blue), var(--radiant-purple));
+        }
+
+        .clock-numbers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .clock-number {
+            position: absolute;
+            font-weight: bold;
+            color: var(--text-dark);
+            font-size: 18px;
+        }
+
+        .ampm-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .ampm-btn {
+            padding: 10px 30px;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .ampm-btn.active {
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            color: white;
+            border-color: var(--radiant-purple);
+        }
+
+        .running-animation {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .cat-running {
+            font-size: 60px;
+            animation: runAcross 15s linear infinite, bounce 0.5s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(168, 85, 247, 0.3));
+        }
+
+        @keyframes runAcross {
+            0% { transform: translateX(-100px) scaleX(1); }
+            49% { transform: translateX(calc(100vw + 100px)) scaleX(1); }
+            50% { transform: translateX(calc(100vw + 100px)) scaleX(-1); }
+            99% { transform: translateX(-100px) scaleX(-1); }
+            100% { transform: translateX(-100px) scaleX(1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating-emoji {
+            position: fixed;
+            font-size: 40px;
+            pointer-events: none;
+            z-index: 999;
+            animation: floatUp 3s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.5);
+            }
+        }
+
+        .install-app-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 999;
+            background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .install-app-btn.show {
+            display: flex;
+        }
+
+        .install-app-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="login-page" class="login-container">
+        <div class="login-card">
+            <div class="logo-section">
+                <h1><i class="fas fa-search"></i> Lost & Found</h1>
+                <p>Student Portal - GITAM University</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="user-id">Registration Number</label>
+                    <input type="text" id="user-id" placeholder="Enter your 10-digit registration number" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <div class="form-group">
+                    <label for="captcha">Enter CAPTCHA</label>
+                    <div class="captcha-group">
+                        <div class="captcha-box" id="captcha-display">12345</div>
+                        <button type="button" class="btn btn-secondary" onclick="refreshCaptcha()" style="width: auto; padding: 12px 15px;">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <input type="text" id="captcha" placeholder="Enter CAPTCHA" required style="margin-top: 10px;">
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> LOGIN
+                </button>
+                <div class="link-group">
+                    <a href="#" onclick="showResetPassword()">Reset password</a>
+                    <a href="#" onclick="showContact()">Contact Support</a>
+                </div>
+                <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 10px;">Don't have an account?</p>
+                    <a href="#" onclick="showRegistration()" style="color: var(--primary-green); font-weight: 600; text-decoration: none;">Register Now</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Page -->
+    <div id="registration-page" class="login-container" style="display: none;">
+        <div class="login-card">
+            <div class="logo-section">
+                <h1><i class="fas fa-user-plus"></i> Register</h1>
+                <p>Create your student account</p>
+            </div>
+            <form id="registration-form">
+                <div class="form-group">
+                    <label for="reg-id">Registration Number *</label>
+                    <input type="text" id="reg-id" placeholder="e.g., 2024038888" required>
+                    <small style="color: var(--text-gray); font-size: 12px;">10-digit registration number</small>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">College Email *</label>
+                    <input type="email" id="reg-email" placeholder="e.g., shanmukh@student.gitam.edu" required>
+                    <small style="color: var(--text-gray); font-size: 12px;">Must be @student.gitam.edu</small>
+                </div>
+                <div class="form-group">
+                    <label for="reg-phone">Phone Number *</label>
+                    <input type="tel" id="reg-phone" placeholder="9876543210" required>
+                    <small style="color: var(--text-gray); font-size: 12px;">10-digit mobile number</small>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password *</label>
+                    <input type="password" id="reg-password" placeholder="Create a strong password" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm-password">Confirm Password *</label>
+                    <input type="password" id="reg-confirm-password" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="#" onclick="showLogin()" style="color: var(--primary-blue); text-decoration: none;">
+                        <i class="fas fa-arrow-left"></i> Back to Login
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student Dashboard -->
+    <div id="student-dashboard" class="dashboard">
+        <div class="header">
+            <h2><i class="fas fa-search"></i> Lost & Found</h2>
+            <div class="user-info">
+                <button id="header-install-btn" class="btn btn-install" onclick="installApp()" style="display: none; width: auto; padding: 10px 20px; margin-right: 10px;">
+                    <i class="fas fa-download"></i> Install App
+                </button>
+                <div class="user-avatar" id="student-avatar">S</div>
+                <div>
+                    <div id="student-name">Student</div>
+                    <div style="font-size: 12px; color: var(--text-gray);" id="student-reg">REG: -</div>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()" style="width: auto; padding: 10px 20px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        <div class="welcome-section">
+            <h1 id="welcome-text">Welcome, Student!</h1>
+            <p>How can we help you today?</p>
+        </div>
+        <div class="options-grid">
+            <div class="option-card" onclick="showReportYourItem()">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Report YOUR Missing Item</h3>
+                <p>Lost something? Report it here</p>
+            </div>
+            <div class="option-card" onclick="showReportSomeoneItem()">
+                <i class="fas fa-hand-holding"></i>
+                <h3>Report Someone Else's Item</h3>
+                <p>Found an item? Report it here</p>
+            </div>
+            <div class="option-card" onclick="showFindItem()">
+                <i class="fas fa-search"></i>
+                <h3>Find Your Missing Item</h3>
+                <p>Search for your reported items</p>
+            </div>
+            <div class="option-card" onclick="showMatchSuggestions()">
+                <i class="fas fa-link"></i>
+                <h3>Match Suggestions</h3>
+                <p>View automated match suggestions</p>
+            </div>
+            <div class="option-card" id="install-option-card" onclick="installApp()" style="display: none;">
+                <i class="fas fa-download"></i>
+                <h3>Install App</h3>
+                <p>Download and install on your device</p>
+            </div>
+        </div>
+
+        <!-- Report Your Item Form -->
+        <div id="report-your-item" class="form-section">
+            <button class="back-btn" onclick="showMainOptions()"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="form-card">
+                <h2>Report Your Missing Item</h2>
+                <form id="your-item-form">
+                    <div class="form-group">
+                        <label>Item Category *</label>
+                        <select id="your-item-category" required>
+                            <option value="">Select Category</option>
+                            <option value="stationery">Stationery</option>
+                            <option value="gadgets">Gadgets</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="vehicle-keys">Vehicle Keys</option>
+                            <option value="bags">Bags</option>
+                            <option value="water-bottles">Water Bottles</option>
+                            <option value="helmets">Helmets</option>
+                            <option value="clothes">Clothes</option>
+                            <option value="wallets">Wallets</option>
+                            <option value="others">Others</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Item Description *</label>
+                        <textarea id="your-item-description" placeholder="Describe your lost item in detail (color, brand, size, unique features)..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Class Number *</label>
+                        <input type="text" id="your-item-class" placeholder="e.g., CS101, EE201" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Time Frame (Optional)</label>
+                        <div class="time-inputs-container">
+                            <div class="time-input-wrapper">
+                                <input type="text" id="your-item-start-time" placeholder="--:--" readonly>
+                                <button type="button" class="clock-btn" onclick="openClockPicker('start')">
+                                    <i class="fas fa-clock"></i>
+                                </button>
+                            </div>
+                            <div class="time-input-wrapper">
+                                <input type="text" id="your-item-end-time" placeholder="--:--" readonly>
+                                <button type="button" class="clock-btn" onclick="openClockPicker('end')">
+                                    <i class="fas fa-clock"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <small style="color: var(--text-gray);">If you don't remember, admin will check your timetable</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Date *</label>
+                        <input type="date" id="your-item-date" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Submit Report
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Report Someone's Item Form -->
+        <div id="report-someone-item" class="form-section">
+            <button class="back-btn" onclick="showMainOptions()"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="form-card">
+                <h2>Report Someone Else's Item</h2>
+                <form id="someone-item-form">
+                    <div class="form-group">
+                        <label>Item Category *</label>
+                        <div class="category-grid">
+                            <div class="category-item" onclick="selectCategory(this, 'stationery')">
+                                <div class="category-icon">✏️</div>
+                                <div class="category-label">Stationery</div>
+                            </div>
+                            <div class="category-item" onclick="selectCategory(this, 'gadgets')">
+                                <div class="category-icon">📱</div>
+                                <div class="category-label">Gadgets</div>
+                            </div>
+                            <div class="category-item" onclick="selectCategory(this, 'electronics')">
+                                <div class="category-icon">💻</div>
+                                <div class="category-label">Electronics</div>
+                            </div>
+                            <div class="category-item" onclick="selectCategory(this, 'vehicle-keys')">
+                                <div class="category-icon">🔑</div>
+                                <div class="category-label">Vehicle Keys</div>
+                            </div>
+                            <div class="category-item" onclick="selectCategory(this, 'bags')">
+                                <div class="category-icon">👜</div>
+                                <div class="category-label">Bags</div>
+                            </div>
+                            <div class="category-item" onclick="selectCategory(this, 'water-bottles')">
+                                <div class="category-icon">💧</div>
+                                <div class="category-label">Water Bottles</div>
+                            </div>
+                            <div class="category-item" onclick="selectCategory(this, 'helmets')">
+                                <div class="category-icon">⛑️</div>
+                                <div class="category-label">Helmets</div>
+                            </div>
+                            <div class="category-item" onclick="selectCategory(this, 'clothes')">
+                                <div class="category-icon">👕</div>
+                                <div class="category-label">Clothes</div>
+                            </div>
+                            <div class="category-item" onclick="selectCategory(this, 'wallets')">
+                                <div class="category-icon">👛</div>
+                                <div class="category-label">Wallets</div>
+                            </div>
+                            <div class="category-item" onclick="selectCategory(this, 'others')">
+                                <div class="category-icon">📦</div>
+                                <div class="category-label">Others</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selected-category" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Item Photo *</label>
+                        <div class="file-upload" onclick="document.getElementById('item-photo').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <input type="file" id="item-photo" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                        </div>
+                        <div class="file-preview" id="image-preview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Item Description *</label>
+                        <textarea id="someone-item-description" placeholder="Describe the found item in detail (color, brand, size, unique features)..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Location Details *</label>
+                        <div class="location-inputs">
+                            <input type="text" id="location-block" placeholder="Block (e.g., Block A)">
+                            <input type="text" id="location-floor" placeholder="Floor (e.g., 2nd Floor)">
+                            <input type="text" id="location-room" placeholder="Room (e.g., Room 201)">
+                        </div>
+                        <input type="text" id="location-place" placeholder="Or named place (e.g., Coke Station)" style="margin-top: 10px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Date Found *</label>
+                        <input type="date" id="found-date" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Submit Report
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Find Item Section -->
+        <div id="find-item" class="form-section">
+            <button class="back-btn" onclick="showMainOptions()"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="form-card">
+                <h2>Find Your Missing Item</h2>
+                <div id="found-items-list">
+                    <p style="text-align: center; color: var(--text-gray); padding: 40px;">
+                        <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; display: block;"></i>
+                        No items found matching your reports.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Match Suggestions Section -->
+        <div id="match-suggestions" class="form-section">
+            <button class="back-btn" onclick="showMainOptions()"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="form-card">
+                <div class="suggestions-header">
+                    <h2>Match Suggestions</h2>
+                    <button class="btn btn-secondary" onclick="refreshMatches()" style="width: auto; padding: 10px 20px;">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterMatches('all')">All Matches</button>
+                    <button class="filter-btn" onclick="filterMatches('high')">High Confidence</button>
+                    <button class="filter-btn" onclick="filterMatches('medium')">Medium</button>
+                    <button class="filter-btn" onclick="filterMatches('low')">Low</button>
+                </div>
+                <div id="matches-list">
+                    <p style="text-align: center; color: var(--text-gray); padding: 40px;">
+                        <i class="fas fa-link" style="font-size: 48px; margin-bottom: 20px; display: block;"></i>
+                        No match suggestions available yet.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile-section" class="profile-section">
+            <button class="back-btn" onclick="showMainOptions()"><i class="fas fa-arrow-left"></i> Back</button>
+            
+            <div class="profile-header">
+                <div class="profile-avatar-large" id="profile-avatar-large">S</div>
+                <h2 id="profile-name">Student User</h2>
+                <p id="profile-registration">Registration: -</p>
+            </div>
+
+            <div class="profile-stats">
+                <div class="profile-stat-card">
+                    <div class="stat-value" id="stat-total-reports">0</div>
+                    <div class="stat-label">Total Reports</div>
+                </div>
+                <div class="profile-stat-card">
+                    <div class="stat-value" id="stat-my-items">0</div>
+                    <div class="stat-label">My Lost Items</div>
+                </div>
+                <div class="profile-stat-card">
+                    <div class="stat-value" id="stat-found-items">0</div>
+                    <div class="stat-label">Found Items</div>
+                </div>
+                <div class="profile-stat-card">
+                    <div class="stat-value" id="stat-resolved-profile">0</div>
+                    <div class="stat-label">Resolved</div>
+                </div>
+            </div>
+
+            <div class="profile-info-card">
+                <h3><i class="fas fa-user"></i> Account Information</h3>
+                <div class="info-row">
+                    <span class="info-label">Registration Number</span>
+                    <span class="info-value" id="profile-user-id">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">User Type</span>
+                    <span class="info-value" id="profile-user-type">Student</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Member Since</span>
+                    <span class="info-value" id="profile-member-since">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email</span>
+                    <span class="info-value" id="profile-email">user@university.edu</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone</span>
+                    <span class="info-value" id="profile-phone">+91 9876543210</span>
+                </div>
+            </div>
+
+            <div class="profile-info-card">
+                <h3><i class="fas fa-list"></i> Recent Reports</h3>
+                <div class="profile-reports-list" id="profile-reports-list">
+                    <p style="text-align: center; color: var(--text-gray); padding: 20px;">
+                        No reports yet
+                    </p>
+                </div>
+            </div>
+
+            <div class="profile-info-card">
+                <h3><i class="fas fa-cog"></i> Settings</h3>
+                <button class="btn btn-secondary" onclick="showResetPassword()" style="margin-bottom: 10px;">
+                    <i class="fas fa-key"></i> Change Password
+                </button>
+                <button class="btn btn-secondary" onclick="showContact()">
+                    <i class="fas fa-headset"></i> Contact Support
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="showMainOptions()">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" onclick="showReportYourItem()">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Report</span>
+            </div>
+            <div class="nav-item" onclick="showMatchSuggestions()">
+                <i class="fas fa-link"></i>
+                <span>Matches</span>
+            </div>
+            <div class="nav-item" onclick="showProfile()">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div id="loading-container" class="loading-container">
+        <lottie-player 
+            src="https://lottie.host/embed/8b5c5f5e-4f3e-4f3e-9c7d-1a2b3c4d5e6f/loading.json" 
+            background="transparent" 
+            speed="1" 
+            style="width: 150px; height: 150px;" 
+            loop 
+            autoplay>
+        </lottie-player>
+        <p style="color: white; margin-top: 20px; font-size: 18px; font-weight: 600;">Processing...</p>
+    </div>
+
+    <!-- Clock Picker Modal -->
+    <div id="clock-picker-modal" class="clock-picker-modal" onclick="closeClockPickerOnBackdrop(event)">
+        <div class="clock-picker-container" onclick="event.stopPropagation()">
+            <h3 style="text-align: center; margin-bottom: 20px; background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Select Time</h3>
+            <div class="clock-face" id="clock-face">
+                <div class="clock-numbers" id="clock-numbers"></div>
+                <div class="clock-hand hour-hand" id="hour-hand"></div>
+                <div class="clock-hand minute-hand" id="minute-hand"></div>
+                <div class="clock-center"></div>
+            </div>
+            <div class="ampm-selector">
+                <button class="ampm-btn" id="am-btn" onclick="setAMPM('AM')">AM</button>
+                <button class="ampm-btn active" id="pm-btn" onclick="setAMPM('PM')">PM</button>
+            </div>
+            <div style="text-align: center; margin-top: 20px; font-size: 24px; font-weight: bold; color: var(--radiant-purple);" id="time-display">12:00 PM</div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="confirmTime()" style="flex: 1;">Confirm</button>
+                <button class="btn btn-secondary" onclick="closeClockPicker()" style="flex: 1;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Running Animation -->
+    <div class="running-animation">
+        <div class="cat-running">🐱</div>
+    </div>
+
+    <!-- Install App Button -->
+    <button id="install-app-btn" class="install-app-btn" onclick="installApp()">
+        <i class="fas fa-download"></i>
+        <span>Install App</span>
+    </button>
+
+    <script>
+        let currentUser = null;
+        let userType = null;
+        let reportedItems = [];
+        let captchaValue = '12345';
+        let registeredUsers = JSON.parse(localStorage.getItem('studentUsers') || '[]');
+        let currentMatchFilter = 'all';
+
+        document.getElementById('login-form').addEventListener('submit', handleLogin);
+        document.getElementById('registration-form').addEventListener('submit', handleRegistration);
+        document.getElementById('your-item-form').addEventListener('submit', handleReportYourItem);
+        document.getElementById('someone-item-form').addEventListener('submit', handleReportSomeoneItem);
+        
+        document.getElementById('your-item-date').valueAsDate = new Date();
+        document.getElementById('found-date').valueAsDate = new Date();
+
+        // Phone number validation (Indian format)
+        document.getElementById('reg-phone').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        // Registration number validation (10 digits only)
+        document.getElementById('reg-id').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        document.getElementById('user-id').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        // Email validation for GITAM domain
+        document.getElementById('reg-email').addEventListener('blur', function(e) {
+            const email = e.target.value;
+            const regId = document.getElementById('reg-id').value;
+            
+            if (email && regId && !email.includes('@')) {
+                e.target.value = regId + '@student.gitam.edu';
+            }
+        });
+
+        function refreshCaptcha() {
+            captchaValue = Math.floor(10000 + Math.random() * 90000).toString();
+            document.getElementById('captcha-display').textContent = captchaValue;
+            document.getElementById('captcha').value = '';
+        }
+
+        function showLogin() {
+            document.getElementById('registration-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'flex';
+        }
+
+        function showRegistration() {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('registration-page').style.display = 'flex';
+        }
+
+        function handleRegistration(e) {
+            e.preventDefault();
+            const regId = document.getElementById('reg-id').value;
+            const email = document.getElementById('reg-email').value;
+            const phone = document.getElementById('reg-phone').value;
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+            // Validation
+            if (regId.length !== 10) {
+                alert('Registration number must be exactly 10 digits');
+                return;
+            }
+
+            // Email validation
+            if (!email.includes('@student.gitam.edu')) {
+                alert('Email must be from @student.gitam.edu domain');
+                return;
+            }
+
+            // Phone validation
+            if (phone.length !== 10) {
+                alert('Please enter a valid 10-digit phone number');
+                return;
+            }
+
+            // Password validation
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            // Check if user already exists
+            const existingUser = registeredUsers.find(u => u.id === regId || u.email === email);
+            if (existingUser) {
+                alert('User with this registration number or email already exists');
+                return;
+            }
+
+            // Create user object
+            const newUser = {
+                id: regId,
+                email: email,
+                phone: phone,
+                password: password,
+                name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
+                type: 'student',
+                registeredAt: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            registeredUsers.push(newUser);
+            localStorage.setItem('studentUsers', JSON.stringify(registeredUsers));
+
+            alert('Registration successful! Please login with your credentials.');
+            showLogin();
+            document.getElementById('registration-form').reset();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const userId = document.getElementById('user-id').value;
+            const password = document.getElementById('password').value;
+            const captcha = document.getElementById('captcha').value;
+
+            if (captcha !== captchaValue) {
+                alert('Invalid CAPTCHA. Please try again.');
+                refreshCaptcha();
+                return;
+            }
+
+            // Student ID validation - must be 10 digits
+            if (userId.length !== 10) {
+                alert('Invalid Registration Number. Must be exactly 10 digits.');
+                refreshCaptcha();
+                return;
+            }
+
+            // Check if student is registered
+            const user = registeredUsers.find(u => u.id === userId);
+            
+            if (user) {
+                // Verify password
+                if (user.password !== password) {
+                    alert('Invalid password');
+                    refreshCaptcha();
+                    return;
+                }
+                currentUser = {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    phone: user.phone,
+                    type: 'student'
+                };
+            } else {
+                alert('Student not registered. Please register first.');
+                refreshCaptcha();
+                return;
+            }
+
+            showStudentDashboard();
+        }
+
+        function showStudentDashboard() {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('student-dashboard').classList.add('active');
+            document.getElementById('student-name').textContent = currentUser.name;
+            document.getElementById('student-reg').textContent = 'REG: ' + currentUser.id;
+            document.getElementById('welcome-text').textContent = `Welcome, ${currentUser.name}!`;
+            document.getElementById('student-avatar').textContent = currentUser.id.slice(-1);
+            loadStudentData();
+        }
+
+        function loadStudentData() {
+            // Load reported items from localStorage (shared with admin)
+            reportedItems = JSON.parse(localStorage.getItem('reportedItems') || '[]');
+        }
+
+        function showMainOptions() {
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item')[0].classList.add('active');
+        }
+
+        function showReportYourItem() {
+            showMainOptions();
+            document.getElementById('report-your-item').classList.add('active');
+            document.querySelectorAll('.nav-item')[1].classList.add('active');
+        }
+
+        function showReportSomeoneItem() {
+            showMainOptions();
+            document.getElementById('report-someone-item').classList.add('active');
+            document.querySelectorAll('.nav-item')[1].classList.add('active');
+        }
+
+        function showFindItem() {
+            showMainOptions();
+            document.getElementById('find-item').classList.add('active');
+            document.querySelectorAll('.nav-item')[2].classList.add('active');
+            loadFoundItems();
+        }
+
+        function showMatchSuggestions() {
+            showMainOptions();
+            document.getElementById('match-suggestions').classList.add('active');
+            document.querySelectorAll('.nav-item')[2].classList.add('active');
+            refreshMatches();
+        }
+
+        function showProfile() {
+            showMainOptions();
+            document.getElementById('profile-section').classList.add('active');
+            document.querySelectorAll('.nav-item')[3].classList.add('active');
+            loadProfileData();
+        }
+
+        function selectCategory(element, category) {
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('selected-category').value = category;
+        }
+
+        function previewImage(input) {
+            const preview = document.getElementById('image-preview');
+            preview.style.display = 'block';
+            preview.innerHTML = '';
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loading-container').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-container').classList.remove('active');
+        }
+
+        function handleReportYourItem(e) {
+            e.preventDefault();
+            const category = document.getElementById('your-item-category').value;
+            const description = document.getElementById('your-item-description').value;
+            const classNumber = document.getElementById('your-item-class').value;
+            const startTime = document.getElementById('your-item-start-time').value;
+            const endTime = document.getElementById('your-item-end-time').value;
+            const date = document.getElementById('your-item-date').value;
+
+            if (!category) {
+                alert('Please select a category');
+                return;
+            }
+
+            showLoading();
+
+            setTimeout(() => {
+                const item = {
+                    id: 'LF' + Date.now(),
+                    description: description,
+                    category: category,
+                    classNumber: classNumber,
+                    timeFrame: startTime && endTime ? `${startTime} - ${endTime}` : 'Not specified',
+                    date: date,
+                    reportedBy: currentUser.id,
+                    reportedByName: currentUser.name,
+                    status: 'pending',
+                    type: 'your-item',
+                    keywords: extractKeywords(description),
+                    timestamp: new Date().toISOString()
+                };
+
+                reportedItems.push(item);
+                // Save to localStorage (shared with admin)
+                localStorage.setItem('reportedItems', JSON.stringify(reportedItems));
+                
+                hideLoading();
+                createFloatingEmoji('🎉', 'Success!');
+                setTimeout(() => {
+                    alert('Your report has been submitted successfully! Admin will verify and contact you.');
+                    document.getElementById('your-item-form').reset();
+                    document.getElementById('your-item-date').valueAsDate = new Date();
+                    showMainOptions();
+                    
+                    // Trigger matching algorithm
+                    setTimeout(() => {
+                        findMatches();
+                        showNotification('Match suggestions updated!', 'success');
+                    }, 500);
+                }, 500);
+            }, 1500);
+        }
+
+        function handleReportSomeoneItem(e) {
+            e.preventDefault();
+            const category = document.getElementById('selected-category').value;
+            const description = document.getElementById('someone-item-description').value;
+            const block = document.getElementById('location-block').value;
+            const floor = document.getElementById('location-floor').value;
+            const room = document.getElementById('location-room').value;
+            const place = document.getElementById('location-place').value;
+            const date = document.getElementById('found-date').value;
+
+            if (!category) {
+                alert('Please select a category');
+                return;
+            }
+
+            showLoading();
+
+            setTimeout(() => {
+                const location = place || `${block ? block + ', ' : ''}${floor ? floor + ', ' : ''}${room || ''}`.trim();
+
+                const item = {
+                    id: 'LF' + Date.now(),
+                    description: description,
+                    category: category,
+                    location: location,
+                    date: date,
+                    reportedBy: currentUser.id,
+                    reportedByName: currentUser.name,
+                    status: 'pending',
+                    type: 'someone-item',
+                    image: document.getElementById('item-photo').files[0] ? URL.createObjectURL(document.getElementById('item-photo').files[0]) : null,
+                    keywords: extractKeywords(description),
+                    timestamp: new Date().toISOString()
+                };
+
+                reportedItems.push(item);
+                // Save to localStorage (shared with admin)
+                localStorage.setItem('reportedItems', JSON.stringify(reportedItems));
+                
+                hideLoading();
+                createFloatingEmoji('✨', 'Thank you!');
+                setTimeout(() => {
+                    alert('Item reported successfully! Thank you for helping.');
+                    document.getElementById('someone-item-form').reset();
+                    document.getElementById('image-preview').style.display = 'none';
+                    document.getElementById('found-date').valueAsDate = new Date();
+                    document.querySelectorAll('.category-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    showMainOptions();
+                    
+                    // Trigger matching algorithm
+                    setTimeout(() => {
+                        findMatches();
+                        showNotification('Match suggestions updated!', 'success');
+                    }, 500);
+                }, 500);
+            }, 1500);
+        }
+
+        function selectCategory(element, category) {
+            // Remove selected class from all category items
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked item
+            element.classList.add('selected');
+            
+            // Set the hidden input value
+            document.getElementById('selected-category').value = category;
+        }
+
+        function extractKeywords(text) {
+            const commonWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'was', 'are', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'my', 'your', 'his', 'her', 'its', 'our', 'their'];
+            const words = text.toLowerCase().split(/\W+/).filter(word => 
+                word.length > 2 && !commonWords.includes(word)
+            );
+            return [...new Set(words)];
+        }
+
+        function calculateMatchScore(lostItem, foundItem) {
+            let score = 0;
+            let reasons = [];
+
+            // Category match (30 points)
+            if (lostItem.category === foundItem.category) {
+                score += 30;
+                reasons.push('Same category');
+            }
+
+            // Keyword overlap (40 points) - Enhanced algorithm
+            const lostKeywords = lostItem.keywords || extractKeywords(lostItem.description);
+            const foundKeywords = foundItem.keywords || extractKeywords(foundItem.description);
+            const commonKeywords = lostKeywords.filter(k => foundKeywords.includes(k));
+            
+            if (commonKeywords.length > 0) {
+                // Calculate similarity ratio
+                const maxLength = Math.max(lostKeywords.length, foundKeywords.length);
+                const similarityRatio = commonKeywords.length / maxLength;
+                const keywordScore = Math.min(40, similarityRatio * 40);
+                score += keywordScore;
+                
+                // Weight important keywords higher
+                const importantWords = ['black', 'blue', 'red', 'white', 'brown', 'leather', 'metal', 'plastic', 'samsung', 'apple', 'dell', 'hp'];
+                const importantMatches = commonKeywords.filter(k => importantWords.includes(k));
+                if (importantMatches.length > 0) {
+                    score += Math.min(10, importantMatches.length * 2);
+                    reasons.push(`${commonKeywords.length} keywords (${importantMatches.length} important)`);
+                } else {
+                    reasons.push(`${commonKeywords.length} matching keywords`);
+                }
+            }
+
+            // Location proximity (20 points) - Enhanced
+            if (lostItem.classNumber && foundItem.location) {
+                const lostLocation = lostItem.classNumber.toLowerCase();
+                const foundLocation = foundItem.location.toLowerCase();
+                
+                // Exact match
+                if (foundLocation.includes(lostLocation)) {
+                    score += 20;
+                    reasons.push('Exact location match');
+                }
+                // Partial match (same block/floor)
+                else if (lostLocation.match(/\d+/) && foundLocation.match(/\d+/)) {
+                    const lostNum = lostLocation.match(/\d+/)[0];
+                    const foundNum = foundLocation.match(/\d+/)[0];
+                    if (lostNum === foundNum) {
+                        score += 10;
+                        reasons.push('Similar location');
+                    }
+                }
+            }
+
+            // Time window overlap (10 points) - Enhanced
+            if (lostItem.date === foundItem.date) {
+                score += 10;
+                reasons.push('Same date');
+                
+                // Check time frame if available
+                if (lostItem.timeFrame && lostItem.timeFrame !== 'Not specified' && foundItem.timestamp) {
+                    const lostTime = lostItem.timeFrame.split(' - ')[0];
+                    const foundTime = new Date(foundItem.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+                    if (lostTime && foundTime.includes(lostTime.split(':')[0])) {
+                        score += 5;
+                        reasons.push('Time overlap');
+                    }
+                }
+            }
+
+            // Description similarity (bonus 5 points)
+            const desc1 = lostItem.description.toLowerCase();
+            const desc2 = foundItem.description.toLowerCase();
+            const words1 = desc1.split(/\W+/).filter(w => w.length > 3);
+            const words2 = desc2.split(/\W+/).filter(w => w.length > 3);
+            const commonWords = words1.filter(w => words2.includes(w));
+            if (commonWords.length >= 3) {
+                score += 5;
+                reasons.push('High description similarity');
+            }
+
+            return { score: Math.min(100, Math.round(score)), reasons };
+        }
+
+        function findMatches() {
+            loadStudentData();
+            const userLostItems = reportedItems.filter(item => 
+                item.reportedBy === currentUser.id && item.type === 'your-item' && item.status !== 'resolved'
+            );
+            const foundItems = reportedItems.filter(item => 
+                item.type === 'someone-item' && item.status !== 'resolved'
+            );
+
+            const matches = [];
+            userLostItems.forEach(lostItem => {
+                foundItems.forEach(foundItem => {
+                    if (foundItem.reportedBy !== currentUser.id) {
+                        const matchResult = calculateMatchScore(lostItem, foundItem);
+                        if (matchResult.score > 20) {
+                            matches.push({
+                                lostItem: lostItem,
+                                foundItem: foundItem,
+                                score: matchResult.score,
+                                reasons: matchResult.reasons,
+                                matchId: 'MATCH_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Sort by score descending
+            matches.sort((a, b) => b.score - a.score);
+
+            // Remove duplicates (same lost+found pair)
+            const uniqueMatches = [];
+            const seenPairs = new Set();
+            matches.forEach(match => {
+                const pairKey = `${match.lostItem.id}_${match.foundItem.id}`;
+                if (!seenPairs.has(pairKey)) {
+                    seenPairs.add(pairKey);
+                    uniqueMatches.push(match);
+                }
+            });
+
+            // Store matches
+            localStorage.setItem('matches_' + currentUser.id, JSON.stringify(uniqueMatches));
+            
+            return uniqueMatches;
+        }
+
+        function refreshMatches() {
+            showLoading();
+            setTimeout(() => {
+                const matches = findMatches();
+                hideLoading();
+                displayMatches(matches);
+                if (matches.length > 0) {
+                    showNotification(`Found ${matches.length} match suggestions!`, 'success');
+                }
+            }, 1000);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function displayMatches(matches) {
+            const list = document.getElementById('matches-list');
+            
+            if (matches.length === 0) {
+                list.innerHTML = `
+                    <p style="text-align: center; color: var(--text-gray); padding: 40px;">
+                        <i class="fas fa-link" style="font-size: 48px; margin-bottom: 20px; display: block;"></i>
+                        No match suggestions available yet. Report items to get matches!
+                    </p>
+                `;
+                return;
+            }
+
+            const filteredMatches = currentMatchFilter === 'all' ? matches :
+                currentMatchFilter === 'high' ? matches.filter(m => m.score >= 70) :
+                currentMatchFilter === 'medium' ? matches.filter(m => m.score >= 40 && m.score < 70) :
+                matches.filter(m => m.score < 40);
+
+            if (filteredMatches.length === 0) {
+                list.innerHTML = `
+                    <p style="text-align: center; color: var(--text-gray); padding: 40px;">
+                        No ${currentMatchFilter} confidence matches found.
+                    </p>
+                `;
+                return;
+            }
+
+            list.innerHTML = filteredMatches.map(match => {
+                const confidenceLevel = match.score >= 70 ? 'high' : match.score >= 40 ? 'medium' : 'low';
+                const confidenceText = match.score >= 70 ? 'High Confidence' : match.score >= 40 ? 'Medium Confidence' : 'Low Confidence';
+                
+                return `
+                    <div class="match-card">
+                        <span class="match-score match-${confidenceLevel}">${match.score}% Match</span>
+                        <h3 style="margin-bottom: 10px; padding-right: 100px;">Your Lost Item</h3>
+                        <p style="color: var(--text-gray); margin-bottom: 5px;"><strong>Description:</strong> ${match.lostItem.description}</p>
+                        <p style="color: var(--text-gray); margin-bottom: 5px;"><strong>Category:</strong> ${formatCategory(match.lostItem.category)}</p>
+                        <p style="color: var(--text-gray); margin-bottom: 15px;"><strong>Lost:</strong> ${match.lostItem.classNumber || 'N/A'} on ${match.lostItem.date}</p>
+                        
+                        <div style="border-top: 2px solid var(--radiant-purple); padding-top: 15px; margin-top: 15px;">
+                            <h3 style="margin-bottom: 10px; background: linear-gradient(135deg, var(--radiant-purple) 0%, var(--radiant-pink) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><i class="fas fa-hand-holding"></i> Found Item Match</h3>
+                            ${match.foundItem.image ? `<img src="${match.foundItem.image}" style="max-width: 150px; border-radius: 8px; margin-bottom: 10px;">` : ''}
+                            <p style="color: var(--text-gray); margin-bottom: 5px;"><strong>Description:</strong> ${match.foundItem.description}</p>
+                            <p style="color: var(--text-gray); margin-bottom: 5px;"><strong>Category:</strong> ${formatCategory(match.foundItem.category)}</p>
+                            <p style="color: var(--text-gray); margin-bottom: 5px;"><strong>Location:</strong> ${match.foundItem.location}</p>
+                            <p style="color: var(--text-gray); margin-bottom: 10px;"><strong>Found:</strong> ${match.foundItem.date}</p>
+                        </div>
+                        
+                        <div class="match-details">
+                            <p><strong>Match Confidence:</strong> ${confidenceText}</p>
+                            <p><strong>Match Reasons:</strong> ${match.reasons.join(', ')}</p>
+                            <p style="margin-top: 10px; font-size: 11px; color: var(--text-gray);">
+                                <i class="fas fa-info-circle"></i> Admin will verify ownership before returning the item.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterMatches(filter) {
+            currentMatchFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            const matches = JSON.parse(localStorage.getItem('matches_' + currentUser.id) || '[]');
+            displayMatches(matches);
+        }
+
+        function loadFoundItems() {
+            loadStudentData();
+            const list = document.getElementById('found-items-list');
+            const userItems = reportedItems.filter(item => item.reportedBy === currentUser.id && item.type === 'your-item');
+            
+            if (userItems.length === 0) {
+                list.innerHTML = `
+                    <p style="text-align: center; color: var(--text-gray); padding: 40px;">
+                        <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; display: block;"></i>
+                        No items found matching your reports.
+                    </p>
+                `;
+            } else {
+                list.innerHTML = userItems.map(item => `
+                    <div style="background: var(--bg-white); padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid var(--primary-green);">
+                        <h3 style="margin-bottom: 10px;">${item.description}</h3>
+                        <p style="color: var(--text-gray); margin-bottom: 5px;"><strong>Category:</strong> ${formatCategory(item.category)}</p>
+                        <p style="color: var(--text-gray); margin-bottom: 5px;"><strong>Class:</strong> ${item.classNumber}</p>
+                        <p style="color: var(--text-gray); margin-bottom: 5px;"><strong>Time:</strong> ${item.timeFrame}</p>
+                        <p style="color: var(--text-gray); margin-bottom: 10px;"><strong>Date:</strong> ${item.date}</p>
+                        <span class="status-badge status-${item.status}">${item.status}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function loadProfileData() {
+            if (!currentUser) return;
+            loadStudentData();
+
+            // Update profile header
+            document.getElementById('profile-name').textContent = currentUser.name;
+            document.getElementById('profile-registration').textContent = 'Registration: ' + currentUser.id;
+            document.getElementById('profile-avatar-large').textContent = currentUser.id.slice(-1);
+            document.getElementById('profile-user-id').textContent = currentUser.id;
+            document.getElementById('profile-user-type').textContent = 'Student';
+            
+            // Set member since date
+            const memberSince = new Date();
+            memberSince.setMonth(memberSince.getMonth() - 6);
+            document.getElementById('profile-member-since').textContent = memberSince.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            // Update email and phone
+            document.getElementById('profile-email').textContent = currentUser.email || (currentUser.id + '@student.gitam.edu');
+            document.getElementById('profile-phone').textContent = currentUser.phone ? '+91 ' + currentUser.phone : '+91 9876543210';
+
+            // Calculate statistics
+            const userReports = reportedItems.filter(item => item.reportedBy === currentUser.id);
+            const myItems = userReports.filter(item => item.type === 'your-item');
+            const foundItems = userReports.filter(item => item.type === 'someone-item');
+            const resolved = userReports.filter(item => item.status === 'resolved' || item.status === 'verified');
+
+            document.getElementById('stat-total-reports').textContent = userReports.length;
+            document.getElementById('stat-my-items').textContent = myItems.length;
+            document.getElementById('stat-found-items').textContent = foundItems.length;
+            document.getElementById('stat-resolved-profile').textContent = resolved.length;
+
+            // Load recent reports
+            const reportsList = document.getElementById('profile-reports-list');
+            if (userReports.length === 0) {
+                reportsList.innerHTML = `
+                    <p style="text-align: center; color: var(--text-gray); padding: 20px;">
+                        No reports yet
+                    </p>
+                `;
+            } else {
+                const recentReports = userReports.slice(0, 10).reverse();
+                reportsList.innerHTML = recentReports.map(item => `
+                    <div class="report-item-mini">
+                        <h4>${item.description}</h4>
+                        <div class="report-meta">
+                            <span><i class="fas fa-tag"></i> ${formatCategory(item.category)}</span>
+                            <span><i class="fas fa-calendar"></i> ${item.date}</span>
+                            <span class="status-badge status-${item.status}">${item.status}</span>
+                        </div>
+                        ${item.classNumber ? `<div style="font-size: 11px; color: var(--text-gray); margin-top: 5px;"><i class="fas fa-door-open"></i> Class: ${item.classNumber}</div>` : ''}
+                        ${item.location ? `<div style="font-size: 11px; color: var(--text-gray); margin-top: 5px;"><i class="fas fa-map-marker-alt"></i> ${item.location}</div>` : ''}
+                    </div>
+                `).join('');
+            }
+        }
+
+        function formatCategory(category) {
+            return category.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        function logout() {
+            currentUser = null;
+            userType = null;
+            document.getElementById('login-page').style.display = 'flex';
+            document.getElementById('student-dashboard').classList.remove('active');
+            document.getElementById('login-form').reset();
+            refreshCaptcha();
+        }
+
+        function showResetPassword() {
+            alert('Reset Password: Please contact admin for password reset.\n\nEmail: support@gitam.edu\nPhone: +91-XXX-XXX-XXXX');
+        }
+
+        function showContact() {
+            alert('Contact Support:\n\nEmail: support@gitam.edu\nPhone: +91-XXX-XXX-XXXX\n\nOffice Hours: 9 AM - 5 PM');
+        }
+
+        // Clock Picker Functions
+        let currentTimeField = null;
+        let selectedHour = 12;
+        let selectedMinute = 0;
+        let selectedAMPM = 'PM';
+        let isDragging = false;
+        let dragType = null; // 'hour' or 'minute'
+
+        function openClockPicker(field) {
+            currentTimeField = field;
+            const modal = document.getElementById('clock-picker-modal');
+            modal.classList.add('active');
+            
+            // Initialize clock numbers
+            initializeClockNumbers();
+            
+            // Set current time if exists
+            const currentValue = document.getElementById(`your-item-${field}-time`).value;
+            if (currentValue) {
+                const [hours, minutes] = currentValue.split(':');
+                selectedHour = parseInt(hours) % 12 || 12;
+                selectedMinute = parseInt(minutes);
+                selectedAMPM = parseInt(hours) >= 12 ? 'PM' : 'AM';
+            }
+            
+            updateClockHands();
+            updateTimeDisplay();
+            setupClockInteraction();
+        }
+
+        function initializeClockNumbers() {
+            const numbersContainer = document.getElementById('clock-numbers');
+            numbersContainer.innerHTML = '';
+            
+            for (let i = 1; i <= 12; i++) {
+                const angle = (i * 30 - 90) * (Math.PI / 180);
+                const radius = 120;
+                const x = 150 + radius * Math.cos(angle);
+                const y = 150 + radius * Math.sin(angle);
+                
+                const number = document.createElement('div');
+                number.className = 'clock-number';
+                number.textContent = i;
+                number.style.left = (x - 10) + 'px';
+                number.style.top = (y - 10) + 'px';
+                numbersContainer.appendChild(number);
+            }
+        }
+
+        function setupClockInteraction() {
+            const clockFace = document.getElementById('clock-face');
+            const hourHand = document.getElementById('hour-hand');
+            const minuteHand = document.getElementById('minute-hand');
+            
+            clockFace.addEventListener('mousedown', startDrag);
+            clockFace.addEventListener('touchstart', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchend', stopDrag);
+        }
+
+        function startDrag(e) {
+            e.preventDefault();
+            isDragging = true;
+            const rect = document.getElementById('clock-face').getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const angle = Math.atan2(clientY - centerY, clientX - centerX) * 180 / Math.PI + 90;
+            const normalizedAngle = (angle + 360) % 360;
+            const distance = Math.sqrt(Math.pow(clientX - centerX, 2) + Math.pow(clientY - centerY, 2));
+            
+            // Determine if dragging hour or minute hand (based on distance from center)
+            if (distance < 100) {
+                dragType = 'hour';
+                selectedHour = Math.round(normalizedAngle / 30) || 12;
+            } else {
+                dragType = 'minute';
+                selectedMinute = Math.round(normalizedAngle / 6);
+            }
+            
+            updateClockHands();
+            updateTimeDisplay();
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            const rect = document.getElementById('clock-face').getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const angle = Math.atan2(clientY - centerY, clientX - centerX) * 180 / Math.PI + 90;
+            const normalizedAngle = (angle + 360) % 360;
+            const distance = Math.sqrt(Math.pow(clientX - centerX, 2) + Math.pow(clientY - centerY, 2));
+            
+            if (dragType === 'hour' || distance < 100) {
+                selectedHour = Math.round(normalizedAngle / 30) || 12;
+            } else {
+                selectedMinute = Math.round(normalizedAngle / 6);
+            }
+            
+            updateClockHands();
+            updateTimeDisplay();
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            dragType = null;
+        }
+
+        function updateClockHands() {
+            const hourHand = document.getElementById('hour-hand');
+            const minuteHand = document.getElementById('minute-hand');
+            
+            const hourAngle = (selectedHour * 30 - 90) % 360;
+            const minuteAngle = (selectedMinute * 6 - 90) % 360;
+            
+            hourHand.style.transform = `rotate(${hourAngle}deg)`;
+            minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
+        }
+
+        function updateTimeDisplay() {
+            const display = document.getElementById('time-display');
+            const hourStr = selectedHour.toString().padStart(2, '0');
+            const minuteStr = selectedMinute.toString().padStart(2, '0');
+            display.textContent = `${hourStr}:${minuteStr} ${selectedAMPM}`;
+        }
+
+        function setAMPM(ampm) {
+            selectedAMPM = ampm;
+            document.getElementById('am-btn').classList.toggle('active', ampm === 'AM');
+            document.getElementById('pm-btn').classList.toggle('active', ampm === 'PM');
+            updateTimeDisplay();
+        }
+
+        function confirmTime() {
+            if (currentTimeField) {
+                let hour24 = selectedHour;
+                if (selectedAMPM === 'PM' && selectedHour !== 12) {
+                    hour24 = selectedHour + 12;
+                } else if (selectedAMPM === 'AM' && selectedHour === 12) {
+                    hour24 = 0;
+                }
+                
+                const timeString = `${hour24.toString().padStart(2, '0')}:${selectedMinute.toString().padStart(2, '0')}`;
+                document.getElementById(`your-item-${currentTimeField}-time`).value = timeString;
+                closeClockPicker();
+            }
+        }
+
+        function closeClockPicker() {
+            document.getElementById('clock-picker-modal').classList.remove('active');
+            currentTimeField = null;
+        }
+
+        function closeClockPickerOnBackdrop(e) {
+            if (e.target.id === 'clock-picker-modal') {
+                closeClockPicker();
+            }
+        }
+
+        // Install App (PWA) Functions
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show bottom-left install button
+            const installBtn = document.getElementById('install-app-btn');
+            if (installBtn) {
+                installBtn.classList.add('show');
+            }
+            // Show header install button
+            const headerInstallBtn = document.getElementById('header-install-btn');
+            if (headerInstallBtn) {
+                headerInstallBtn.style.display = 'flex';
+            }
+            // Show install option card
+            const installCard = document.getElementById('install-option-card');
+            if (installCard) {
+                installCard.style.display = 'block';
+            }
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                        // Hide all install buttons after installation
+                        const installBtn = document.getElementById('install-app-btn');
+                        if (installBtn) {
+                            installBtn.classList.remove('show');
+                        }
+                        const headerInstallBtn = document.getElementById('header-install-btn');
+                        if (headerInstallBtn) {
+                            headerInstallBtn.style.display = 'none';
+                        }
+                        const installCard = document.getElementById('install-option-card');
+                        if (installCard) {
+                            installCard.style.display = 'none';
+                        }
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                // Fallback for browsers that don't support PWA
+                alert('To install this app:\n\n1. Open menu (three dots)\n2. Select "Install app" or "Add to Home Screen"\n3. Follow the prompts');
+            }
+        }
+
+        // Check if app is already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            const installBtn = document.getElementById('install-app-btn');
+            if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+            const headerInstallBtn = document.getElementById('header-install-btn');
+            if (headerInstallBtn) {
+                headerInstallBtn.style.display = 'none';
+            }
+            const installCard = document.getElementById('install-option-card');
+            if (installCard) {
+                installCard.style.display = 'none';
+            }
+        }
+
+        // Floating Emoji Animation
+        function createFloatingEmoji(emoji, text) {
+            const emojiEl = document.createElement('div');
+            emojiEl.className = 'floating-emoji';
+            emojiEl.textContent = emoji;
+            emojiEl.style.left = Math.random() * 80 + 10 + '%';
+            emojiEl.style.bottom = '20%';
+            document.body.appendChild(emojiEl);
+            
+            setTimeout(() => {
+                emojiEl.remove();
+            }, 3000);
+        }
+
+        // Add more running animations periodically
+        function addRandomRunningAnimation() {
+            const emojis = ['🐱', '🐶', '🐰', '🐼', '🦊', '🐨', '🐯', '🦁'];
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            const animContainer = document.createElement('div');
+            animContainer.className = 'running-animation';
+            animContainer.style.bottom = Math.random() * 200 + 50 + 'px';
+            animContainer.style.right = '-100px';
+            animContainer.innerHTML = `<div class="cat-running">${randomEmoji}</div>`;
+            document.body.appendChild(animContainer);
+            
+            setTimeout(() => {
+                animContainer.remove();
+            }, 16000);
+        }
+
+        // Add running animations every 20 seconds
+        setInterval(addRandomRunningAnimation, 20000);
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered:', registration);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        refreshCaptcha();
+    </script>
+</body>
+</html>
+
